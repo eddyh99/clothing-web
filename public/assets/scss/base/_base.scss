@@ -1,0 +1,27 @@
+@use '../abstracts';
+
+// -----------------------------------------------------------------------------
+// This file contains very basic styles.
+// -----------------------------------------------------------------------------
+
+/**
+ * DATATABLES
+ */
+div.dt-container {
+  select.dt-input {
+    margin-right: 8px;
+  }
+}
+
+/* SPINER input number */
+.no-spinner {
+  appearance: textfield; // Standard
+  -webkit-appearance: none; // Chrome, Safari, newer Edge
+  -moz-appearance: textfield; // Firefox
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}

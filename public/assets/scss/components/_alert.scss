@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the alert component.
+// -----------------------------------------------------------------------------
+
+$alert-top-spacing: 20px;
+$alert-right-spacing: 20px;
+$alert-z-index: 1050;
+$alert-max-width: 350;
+
+.alert-floating-top-right {
+    position: fixed;
+    top: $alert-top-spacing;
+    right: $alert-right-spacing;
+    z-index: $alert-z-index;
+    max-width: $alert-max-width;
+}

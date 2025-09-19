@@ -1,0 +1,15 @@
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the alert component.
+// -----------------------------------------------------------------------------
+
+.btn-primary {
+    background: linear-gradient(90deg, #c0a664, #c7aa64) !important;
+    border: none !important;
+    color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: linear-gradient(90deg, #b29250, #d1c46e) !important;
+    color: #fff !important;
+}

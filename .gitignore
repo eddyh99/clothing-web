@@ -1,0 +1,13 @@
+writable/debugbar/debugbar_*.json
+
+writable/logs/log-*.log
+writable/session/ci_session*
+
+# Ignore environment files
+.env
+
+# Ignore vendor (jika pakai PHP composer)
+vendor/
+
+# Ignore node_modules (jika ada FE JS)
+node_modules/
