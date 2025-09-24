@@ -1,73 +1,69 @@
 <script nonce="<?= esc($nonce) ?>">
-    $('#tabel_pengguna').DataTable({
-        "responsive": true,
-        "order": [],
-        "ajax": {
-            "url": "<?= base_url() ?>members/pengguna/show_pengguna",
-            "type": "GET",
-            "dataSrc": function(data) {
-                // Pastikan data.data adalah array, lalu filter yang is_active == 1
-                if (Array.isArray(data.data)) {
-                    return data.data.filter(row => row.is_active == 1);
-                }
-                return [];
-            },
-            "error": function(xhr, error, thrown) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.redirect) {
-                        window.location.href = response.redirect;
-                    }
-                } catch (e) {
-                    console.error('Error parsing response', e);
-                }
+$('#tabel_pengguna').DataTable({
+    "responsive": true,
+    "order": [],
+    "ajax": {
+        "url": "<?= base_url() ?>members/pengguna/show_pengguna",
+        "type": "GET",
+        "dataSrc": function(data) {
+            if (Array.isArray(data.data)) {
+                return data.data.filter(row => row.is_active == 1);
             }
+            return [];
         },
-        "columns": [
-            {
-                data: null,
-                render: function(data, type, full, meta) {
-                    return meta.row + 1;
-                },
-                orderable: false,
-                searchable: false,
-                width: "30px"
-            },
-            {
-                data: 'username'
-            },
-            {
-                data: 'email'
-            },
-            {
-                data: 'role'
-            },
-            {
-                data: null,
-
-                render: function(data, type, full, meta) {
-                    console.log('Render row data:', full); // 🔍 Logging semua isi row
-                    let btnedit = '', btndel = '';
-
-                    if (full.role != 'admin') {
-                        const updateUrl = `<?= base_url('members/pengguna/update/') ?>${full.id}`;
-                        console.log('Update URL:', updateUrl); // 🔍 Logging URL hasil build
-                        btnedit = `<a href="${updateUrl}" class="btn btn-sm btn-primary rounded-2"><i class="mdi mdi-square-edit-outline"></i></a>`;
-                        btndel = `<a href="#" class="btn btn-sm btn-danger btn-delete-user" data-id="${full.id}" data-name="${full.username}" data-bs-toggle="modal" data-bs-target="#modal_deleteuser"><i class="mdi mdi-close-thick"></i></a>`;
-                    }
-
-                    return btnedit + ' ' + btndel;
-                },
-
-                orderable: false,
-                searchable: false,
-                width: "100px"
+        "error": function(xhr, error, thrown) {
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                }
+            } catch (e) {
+                console.error('Error parsing response', e);
             }
-        ],
-        "language": {
-            "emptyTable": "Tidak ada data pengguna tersedia."
         }
-    });
+    },
+    "columns": [
+        {
+            data: null,
+            render: function(data, type, full, meta) {
+                return meta.row + 1;
+            },
+            orderable: false,
+            searchable: false,
+            width: "30px"
+        },
+        {
+            data: 'username'
+        },
+        {
+            data: 'email'
+        },
+        {
+            data: 'role_id' // ← sementara tampilkan role_id dulu
+        },
+        {
+            data: null,
+            render: function(data, type, full, meta) {
+                console.log('Render row data:', full); // 🔍 cek isi row
+
+                let btnedit = '', btndel = '';
+                if (full.role_id != '1') { // contoh: anggap role_id 1 = admin
+                    const updateUrl = `<?= base_url('members/pengguna/update/') ?>${full.user_id}`;
+                    btnedit = `<a href="${updateUrl}" class="btn btn-sm btn-primary rounded-2"><i class="mdi mdi-square-edit-outline"></i></a>`;
+                    btndel = `<a href="#" class="btn btn-sm btn-danger btn-delete-user" data-id="${full.user_id}" data-name="${full.username}" data-bs-toggle="modal" data-bs-target="#modal_deleteuser"><i class="mdi mdi-close-thick"></i></a>`;
+                }
+
+                return btnedit + ' ' + btndel;
+            },
+            orderable: false,
+            searchable: false,
+            width: "100px"
+        }
+    ],
+    "language": {
+        "emptyTable": "Tidak ada data pengguna tersedia."
+    }
+});
 
     $(function() {
 

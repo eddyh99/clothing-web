@@ -7,63 +7,43 @@
                     <div class="col-6">
                         <form method="POST" action="<?= base_url('members/pelanggan/save_update') ?>">
                             <?= csrf_field() ?>
-                            <input type="hidden" name="id" value="<?= esc($client['id']) ?>">
+                            <input type="hidden" name="id" value="<?= esc($pelanggan['customer_id']) ?>">
 
                             <div class="mb-3">
-                                <label for="name" class="form-label">Nama</label>
-                                <input type="text" class="form-control" id="name" name="name" value="<?= esc($client['name']) ?>" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="country" class="form-label">Negara</label>
-                                <select class="form-select" id="country" name="country" required>
-                                    <option value="">Pilih Negara</option>
-                                    <!-- Diisi lewat JS -->
-                                </select>
-
-                                <input type="hidden" id="selected_country" value="<?= esc($client['country']) ?>">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="id_type" class="form-label">ID Pengenal</label>
-                                <select class="form-select" id="id_type" name="id_type" required>
-                                    <option value="">Pilih ID</option>
-                                    <option value="Passport" <?= (esc($client['id_type']) == 'Passport') ? 'selected' : '' ?>>Passport</option>
-                                    <option value="KTP" <?= (esc($client['id_type']) == 'KTP') ? 'selected' : '' ?>>KTP</option>
-                                    <option value="SIM" <?= (esc($client['id_type']) == 'SIM') ? 'selected' : '' ?>>SIM</option>
-                                    <option value="KITAS" <?= (esc($client['id_type']) == 'KITAS') ? 'selected' : '' ?>>KITAS</option>
-                                    <option value="KITAP" <?= (esc($client['id_type']) == 'KITAP') ? 'selected' : '' ?>>KITAP</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="id_number" class="form-label">Nomor ID</label>
-                                <input type="text" class="form-control" id="id_number" name="id_number" value="<?= esc($client['id_number']) ?>" required>
+                                <label for="full_name" class="form-label">Nama</label>
+                                <input type="text" class="form-control" id="full_name" 
+                                    name="full_name" value="<?= esc($pelanggan['full_name']) ?>" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Telp</label>
-                                <input type="text" class="form-control" id="phone" name="phone" value="<?= esc($client['phone']) ?>">
+                                <input type="text" class="form-control" id="phone" 
+                                    name="phone" value="<?= esc($pelanggan['phone']) ?>" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="<?= esc($client['email']) ?>">
+                                <input type="email" class="form-control" id="email" 
+                                    name="email" value="<?= esc($pelanggan['email']) ?>">
                             </div>
 
-                            <div class="mb-3">
-                                <label for="address" class="form-label">Alamat</label>
-                                <input type="text" class="form-control" id="address" name="address" value="<?= esc($client['address']) ?>" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="job" class="form-label">Pekerjaan</label>
-                                <input type="text" class="form-control" id="job" name="job" value="<?= esc($client['job']) ?>">
+                            <div class="mb-3 col-6">
+                                <label for="membership" class="form-label">Membership</label>
+                                <select class="form-select rounded-2" id="membership" name="membership_id">
+                                    <option value="">Pilih Membership...</option>
+                                    <?php foreach ($memberships as $dt): ?>
+                                        <option value="<?=$dt["membership_id"]?>" 
+                                            <?= ($pelanggan['membership_id'] == $dt["membership_id"]) ? 'selected' : '' ?>>
+                                            <?=$dt["name"]?>
+                                        </option>
+                                    <?php endforeach?>
+                                </select>
                             </div>
 
                             <button type="submit" class="btn btn-primary"><i class="mdi mdi-content-save"></i> Simpan Perubahan</button>
                         </form>
                     </div>
+                    
                 </div>
             </div>
         </div>

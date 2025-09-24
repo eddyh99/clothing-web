@@ -83,7 +83,7 @@ $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : '
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $baseUrl = $protocol . '://' . $host . '/';
 defined('BASE_URL') || define('BASE_URL', $baseUrl);
-defined('SITE_TITLE') || define('SITE_TITLE', "VALURA");
+defined('SITE_TITLE') || define('SITE_TITLE', "CLOTHING");
 // Define localhost sebagai URLAPI
 
 $parts = explode('.', $host);

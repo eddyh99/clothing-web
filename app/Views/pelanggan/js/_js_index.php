@@ -1,47 +1,16 @@
 <script nonce="<?= esc($nonce) ?>">
-    $('#btnExportExcel').on('click', function () {
-        tblplg.button(1).trigger();
-    });
-    $('#btnExportPdf').on('click', function () {
-        tblplg.button(0).trigger();
-    });
-    $('#btnExportPrint').on('click', function () {
-        tblplg.button(2).trigger();
-    });
-
-    let tblplg = $('#tabel_pelanggan').DataTable({       
-        buttons: [
-            {
-                extend: 'pdfHtml5',
-                text: '<i class="mdi mdi-file-pdf-outline"></i> PDF',
-                className: 'btn btn-sm btn-danger me-2',
-                title: 'Daftar Pelanggan',
-                exportOptions: { columns: [0,1,2,3,4,5] }
-            },
-            {
-                extend: 'excelHtml5',
-                text: '<i class="mdi mdi-file-excel-outline"></i> Excel',
-                className: 'btn btn-sm btn-success me-2',
-                title: 'Daftar Pelanggan',
-                exportOptions: { columns: [0,1,2,3,4,5] }
-            },
-            {
-                extend: 'print',
-                text: '<i class="mdi mdi-printer"></i> Print',
-                className: 'btn btn-sm btn-secondary',
-                title: 'Daftar Pelanggan',
-                exportOptions: { columns: [0,1,2,3,4,5] }
-            }
-        ],
+    $('#tabel_pelanggan').DataTable({
         "responsive": true,
         "order": [],
         "ajax": {
             "url": "<?= base_url() ?>members/pelanggan/show_pelanggan",
             "type": "GET",
-            "dataSrc": function(data) {
-                // Pastikan data.data adalah array, lalu filter yang is_active == 1
-                if (Array.isArray(data.data)) {
-                    return data.data.filter(row => row.is_active == 1);
+            "dataSrc": function(response) {
+                console.log("=== RAW response dari show_pelanggan() ===", response);
+
+                // Pastikan response.data adalah array
+                if (Array.isArray(response.data)) {
+                    return response.data;
                 }
                 return [];
             },
@@ -67,39 +36,22 @@
                 width: "30px"
             },
             {
-                data: 'name'
+                data: 'customer_id'
             },
             {
-                data: 'id_type'
-            },
-            {
-                data: 'id_number'
-            },
-            {
-                data: 'country'
+                data: 'full_name'
             },
             {
                 data: 'phone'
             },
             {
+                data: 'email'
+            },
+            {
                 data: null,
                 render: function(data, type, full, meta) {
-                    const btnedit = `
-                    <a 
-                        href="<?= base_url() ?>members/pelanggan/update/${full.id}" 
-                        class="btn btn-sm btn-primary rounded-2">
-                            <i class="mdi mdi-square-edit-outline"></i>
-                    </a>`;
-                    const btndel = `
-                    <a 
-                        href="#" 
-                        class="btn btn-sm btn-danger btn-delete-client" 
-                        data-id="${full.id}" 
-                        data-name="${full.name}" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#modal_deleteclient">
-                            <i class="mdi mdi-close-thick"></i>
-                    </a>`;
+                    const btnedit = `<a href="<?= base_url() ?>members/pelanggan/update/${full.customer_id}" class="btn btn-sm btn-primary rounded-2"><i class="mdi mdi-square-edit-outline"></i></a>`;
+                    const btndel = `<a href="#" class="btn btn-sm btn-danger btn-delete-pelanggan" data-id="${full.customer_id}" data-name="${full.full_name}" data-bs-toggle="modal" data-bs-target="#modal_deletepelanggan"><i class="mdi mdi-close-thick"></i></a>`;
                     return btnedit + ' ' + btndel;
                 },
                 orderable: false,
@@ -113,22 +65,21 @@
     });
 
     $(function() {
-
-        // Klik tombol delete client
-        $(document).on('click', '.btn-delete-client', function () {
-            $('#clientIdToDelete').val($(this).data('id'));
-            $('#clientNameToDelete').text($(this).data('name'));
+        // Klik tombol delete pelanggan
+        $(document).on('click', '.btn-delete-pelanggan', function () {
+            $('#pelangganIdToDelete').val($(this).data('id'));
+            $('#pelangganNameToDelete').text($(this).data('name'));
         });
 
-        // Konfirmasi delete client
+        // Konfirmasi delete
         $('#confirmDeleteBtn').on('click', function () {
-            const id = $('#clientIdToDelete').val();
+            const id = $('#pelangganIdToDelete').val();
 
             $.getJSON(`<?= base_url('members/pelanggan/delete') ?>`, { id: id })
                 .done(function (data) {
                     if (data.success) {
-                        $('#modal_deleteclient').modal('hide');
-                        success_alert(data.message, 'Pelanggan');
+                        $('#modal_deletepelanggan').modal('hide');
+                        success_alert(data.message, 'Brand');
                         $('#tabel_pelanggan').DataTable().ajax.reload(null, false);
                     } else {
                         failed_alert(data.message, "Gagal menghapus pelanggan");
@@ -146,11 +97,7 @@
                         failed_alert(null, "Terjadi kesalahan saat menghapus pelanggan");
                     }
                 });
-                // .fail(function () {
-                //     failed_alert(null, "Terjadi kesalahan saat menghapus pelanggan");
-                // });
         });
 
     });
-
 </script>

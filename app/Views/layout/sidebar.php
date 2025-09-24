@@ -40,13 +40,13 @@
                 </li>
                 <?php endif; ?>
 
-                <!-- Master Data -->
-                <?php if (can('Master Data','canView')): ?>
+                <!-- Set Up -->
+                <?php if (can('Set Up','canView')): ?>
                 <li class="nav-item">
                     <a class="nav-link menu-link <?=(!empty($mnmaster)) ? "active" : "collapsed" ?>" 
                        href="#sidebarApps" data-bs-toggle="collapse" role="button" 
                        aria-expanded="false" aria-controls="sidebarApps">
-                        <i class="ri-apps-2-line"></i> <span>Master Data</span>
+                        <i class="ri-apps-2-line"></i> <span>Set Up</span>
                     </a>
                     <div class="collapse menu-dropdown <?=$mnmaster ?? null?>" id="sidebarApps">
                         <ul class="nav nav-sm flex-column">
@@ -60,51 +60,59 @@
                             </li>
 
                             <li class="nav-item">
-                                <a href="<?=base_url()?>members/pengguna" class="nav-link <?=$subpengguna ?? null?>"> Data Pengguna </a>
+                                <a href="<?=base_url()?>members/pengguna" class="nav-link <?=$subpengguna ?? null?>"> Pengguna </a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="<?=base_url()?>members/pelanggan" class="nav-link <?=$subpel ?? null?>"> Daftar Client </a>
+                                <a href="<?=base_url()?>members/brand" class="nav-link <?=$subbrand ?? null?>"> Brand </a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="<?=base_url()?>members/agen" class="nav-link <?=$subagen ?? null?>"> Daftar Agen </a>
+                                <a href="<?=base_url()?>members/kategori" class="nav-link <?=$subkategori ?? null?>"> Kategori </a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="<?=base_url()?>members/currency" class="nav-link <?=$subcurrency ?? null?>"> Daftar Currency </a>
+                                <a href="<?=base_url()?>members/size" class="nav-link <?=$subsize ?? null?>"> Size </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a href="<?=base_url()?>members/varian" class="nav-link <?=$subvarian ?? null?>"> Varian </a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="<?=base_url()?>members/rate" class="nav-link <?=$subrate ?? null?>"> Exchange Rate </a>
+                                <a href="<?=base_url()?>members/bahanbakuproduk" class="nav-link <?=$subbahanbaku ?? null?>"> Bahan Baku </a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="<?=base_url()?>members/bank" class="nav-link <?=$subbank ?? null?>"> Bank </a>
+                                <a href="<?=base_url()?>members/membership" class="nav-link <?=$submembership ?? null?>"> Membership </a>
                             </li>
 
                         </ul>
                     </div>
                 </li>
                 <?php endif; ?>
-
-                <!-- Penukaran -->
-                <?php if (can('Penukaran','canView')): ?>
+                
+                <!-- Master Data -->
+                <?php if (can('Master Data','canView')): ?>
                 <li class="nav-item">
-                    <a class="nav-link menu-link <?=(!empty($mntransaksi)) ? "active" : "collapsed" ?>" 
-                       href="#sidebarTransaction" data-bs-toggle="collapse" role="button" 
-                       aria-expanded="false" aria-controls="sidebarTransaction">
-                        <i class="mdi mdi-repeat"></i> <span>Penukaran</span>
+                    <a class="nav-link menu-link <?=(!empty($mnmaster)) ? "active" : "collapsed" ?>" 
+                       href="#sidebarApps" data-bs-toggle="collapse" role="button" 
+                       aria-expanded="false" aria-controls="sidebarApps">
+                        <i class="ri-apps-2-line"></i> <span>Master Data</span>
                     </a>
-                    <div class="collapse menu-dropdown <?=$mntransaksi ?? null?>" id="sidebarTransaction">
+                    <div class="collapse menu-dropdown <?=$mnmaster ?? null?>" id="sidebarApps">
                         <ul class="nav nav-sm flex-column">
 
                             <li class="nav-item">
-                                <a href="<?= base_url('members/transaction/buy') ?>" class="nav-link <?=$subbeli ?? null?>"> Beli </a>
+                                <a href="<?=base_url()?>members/produk" class="nav-link <?=$subproduk ?? null?>"> Produk </a>
                             </li>
 
                             <li class="nav-item">
-                                <a href="<?= base_url('members/transaction/sell') ?>" class="nav-link <?=$subjual ?? null?>"> Jual </a>
+                                <a href="<?=base_url()?>members/pelanggan" class="nav-link <?=$subpelanggan ?? null?>"> Pelanggan </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="<?=base_url()?>members/partnerkonsi" class="nav-link <?=$subpartnerkonsi ?? null?>"> Partner Konsinyasi </a>
                             </li>
 
                         </ul>
@@ -118,68 +126,6 @@
                     <a class="nav-link menu-link <?=$mnkas ?? null?>" href="<?=base_url()?>members/kas">
                         <i class="mdi mdi-cash"></i> <span>Kas</span>
                     </a>
-                </li>
-                <?php endif; ?>
-
-                <!-- Live Rate -->
-                <?php if (can('Live Rate','canView')): ?>
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="<?=base_url()?>members/live-rate">
-                            <i class="mdi mdi-signal-variant"></i> <span>Live Rate</span>
-                        </a>
-                    </li>
-                <?php endif; ?>
-
-                <!-- Bank Settlement -->
-                <?php if (can('Bank Settlement','canView')): ?>
-                <li class="nav-item">
-                    <a class="nav-link menu-link <?=$mnsettlement ?? null?>" href="<?= base_url('members/bank-settlement') ?>">
-                        <i class="mdi mdi-cash-multiple"></i> <span>Bank Settlement</span>
-                    </a>
-                </li>
-                <?php endif; ?>
-
-                <!-- Laporan -->
-                <?php if (can('Laporan','canView')): ?>
-                <li class="nav-item">
-                    <a class="nav-link menu-link <?=(!empty($mnlaporan)) ? "active" : "collapsed" ?>" 
-                       href="#sidebarReport" data-bs-toggle="collapse" role="button" 
-                       aria-expanded="false" aria-controls="sidebarReport">
-                        <i class="mdi mdi-book-open-variant"></i> <span>Laporan</span>
-                    </a>
-                    <div class="collapse menu-dropdown <?=$mnlaporan ?? null?>" id="sidebarReport">
-                        <ul class="nav nav-sm flex-column">
-                            
-                            <li class="nav-item">
-                                <a href="<?= base_url('members/laporan/rekap-harian') ?>" class="nav-link <?=$subrkpharian ?? null?>">Rekap Harian</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="<?= base_url('members/laporan/daily-transaction')?>" class="nav-link <?=$subdaily ?? null?>">Laporan Transaksi</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="<?= base_url('members/laporan/currency-rekap') ?>" class="nav-link <?=$subvaluta ?? null?>">Laporan Valuta</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="<?= base_url('members/laporan/rekap-pelanggan') ?>" class="nav-link <?=$subrekappelanggan ?? null?>">Rekap Pelanggan</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="<?= base_url('members/laporan/settlement-rekap') ?>" class="nav-link <?=$subsettlement ?? null?>">Laporan Setoran Bank</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="<?= base_url('members/laporan/kas-rekap') ?>" class="nav-link <?=$subkas ?? null?>">Laporan Kas Harian</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="<?= base_url('members/laporan/profit-bulanan') ?>" class="nav-link <?=$subprofitbulanan ?? null?>">Laporan Profit Bulanan</a>
-                            </li>
-
-                        </ul>
-                    </div>
                 </li>
                 <?php endif; ?>
                 

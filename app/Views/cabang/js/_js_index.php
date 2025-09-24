@@ -5,14 +5,39 @@
         "ajax": {
             "url": "<?= base_url() ?>members/cabang/show_cabang",
             "type": "GET",
-            "dataSrc": function(data) {
-                // Sembunyikan tombol tambah jika sudah sampai max_branch
+            // "dataSrc": function(data) {
+            //     // Sembunyikan tombol tambah jika sudah sampai max_branch
                 
-                // console.log("current_branch_count:", data.current_branch_count);
-                // console.log("max_branch:", data.max_branch);
+            //     // console.log("current_branch_count:", data.current_branch_count);
+            //     // console.log("max_branch:", data.max_branch);
+            //     const btnTambah = document.getElementById('btnTambahCabang');  
+            //     const maxBranches = ;
+            //     const currentCount = data.data.length || 0;
+
+            //     if (currentCount >= maxBranches) {
+            //         btnTambah.style.display = 'none';
+            //     } else {
+            //         btnTambah.style.display = 'inline-block';
+            //     }
+
+            //     // Pastikan data.data adalah array, lalu filter yang is_active == 1
+            //     if (Array.isArray(data.data)) {
+            //         return data.data.filter(row => row.is_active == 1);
+            //     }
+            //     return [];
+            // },
+            "dataSrc": function(response) {
+                console.log("=== RAW response dari show_cabang() ===", response);
+
                 const btnTambah = document.getElementById('btnTambahCabang');  
-                const maxBranches = <?= (int) $_SESSION["max_branch"] ?>;
-                const currentCount = data.data.length || 0;
+                const maxBranches = 5; // sementara hardcode
+
+                // Ambil array dari response.data
+                const branches = Array.isArray(response.data) ? response.data : [];
+                console.log("=== Parsed branches ===", branches);
+
+                const currentCount = branches.length;
+                console.log("=== currentCount ===", currentCount, "maxBranches:", maxBranches);
 
                 if (currentCount >= maxBranches) {
                     btnTambah.style.display = 'none';
@@ -20,11 +45,15 @@
                     btnTambah.style.display = 'inline-block';
                 }
 
-                // Pastikan data.data adalah array, lalu filter yang is_active == 1
-                if (Array.isArray(data.data)) {
-                    return data.data.filter(row => row.is_active == 1);
-                }
-                return [];
+                // Map supaya branch_id jadi id
+                const mapped = branches.map(row => ({
+                    ...row,
+                    id: row.branch_id
+                }));
+
+                console.log("=== Mapped branches (buat DataTable) ===", mapped);
+
+                return mapped;
             },
             "error": function(xhr, error, thrown) {
                 try {

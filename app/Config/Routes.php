@@ -113,50 +113,94 @@ $routes->group('members', ['filter' => 'restoreSession'], function($routes) {
         $routes->get('delete', 'Members\Bank::bank_delete');
     });
     
-    // Agen Routes
-    $routes->group('agen', function($routes) {
-        $routes->get('/', 'Members\Agen::index');
-        $routes->get('show_agen', 'Members\Agen::show_agen');
-        $routes->get('tambah', 'Members\Agen::agen_tambah');
-        $routes->get('update/(:num)', 'Members\Agen::agen_update/$1');
-        $routes->post('save_tambah', 'Members\Agen::agen_save_tambah');
-        $routes->post('save_update', 'Members\Agen::agen_save_update');
-        $routes->get('delete', 'Members\Agen::agen_delete');
+    // Brand Routes
+    $routes->group('brand', function($routes) {
+        $routes->get('/', 'Members\Brand::index');
+        $routes->get('show_brand', 'Members\Brand::show_brand');
+        $routes->get('tambah', 'Members\Brand::brand_tambah');
+        $routes->get('update/(:num)', 'Members\Brand::brand_update/$1');
+        $routes->post('save_tambah', 'Members\Brand::brand_save_tambah');
+        $routes->post('save_update', 'Members\Brand::brand_save_update');
+        $routes->get('delete', 'Members\Brand::brand_delete');
     });
     
-    // Bank Settlement Routes
-    $routes->group('bank-settlement', function($routes) {
-        $routes->get('/', 'Members\BankSettlement::index');
-        $routes->get('show_settlement', 'Members\BankSettlement::show_settlement');
-        $routes->post('save_tambah', 'Members\BankSettlement::bank_settlement_save_tambah');
+    // Kategori Routes
+    $routes->group('kategori', function($routes) {
+        $routes->get('/', 'Members\Kategori::index');
+        $routes->get('show_kategori', 'Members\Kategori::show_kategori');
+        $routes->get('tambah', 'Members\Kategori::kategori_tambah');
+        $routes->get('update/(:num)', 'Members\Kategori::kategori_update/$1');
+        $routes->post('save_tambah', 'Members\Kategori::kategori_save_tambah');
+        $routes->post('save_update', 'Members\Kategori::kategori_save_update');
+        $routes->get('delete', 'Members\Kategori::kategori_delete');
+    });
+
+    // Size Routes
+    $routes->group('size', function($routes) {
+        $routes->get('/', 'Members\Size::index');
+        $routes->get('show_size', 'Members\Size::show_size');
+        $routes->get('tambah', 'Members\Size::size_tambah');
+        $routes->get('update/(:num)', 'Members\Size::size_update/$1');
+        $routes->post('save_tambah', 'Members\Size::size_save_tambah');
+        $routes->post('save_update', 'Members\Size::size_save_update');
+        $routes->get('delete', 'Members\Size::size_delete');
+    });
+
+    // Varian Routes
+    $routes->group('varian', function($routes) {
+        $routes->get('/', 'Members\Varian::index');
+        $routes->get('show_varian', 'Members\Varian::show_varian');
+        $routes->get('tambah', 'Members\Varian::varian_tambah');
+        $routes->get('update/(:num)', 'Members\Varian::varian_update/$1');
+        $routes->post('save_tambah', 'Members\Varian::varian_save_tambah');
+        $routes->post('save_update', 'Members\Varian::varian_save_update');
+        $routes->get('delete', 'Members\Varian::varian_delete');
+    });
+
+    // Bahanbakuproduk Routes
+    $routes->group('bahanbakuproduk', function($routes) {
+        $routes->get('/', 'Members\Bahanbakuproduk::index');
+        $routes->get('show_bahanbakuproduk', 'Members\Bahanbakuproduk::show_bahanbakuproduk');
+        $routes->get('tambah', 'Members\Bahanbakuproduk::bahanbakuproduk_tambah');
+        $routes->get('update/(:num)', 'Members\Bahanbakuproduk::bahanbakuproduk_update/$1');
+        $routes->post('save_tambah', 'Members\Bahanbakuproduk::bahanbakuproduk_save_tambah');
+        $routes->post('save_update', 'Members\Bahanbakuproduk::bahanbakuproduk_save_update');
+        $routes->get('delete', 'Members\Bahanbakuproduk::bahanbakuproduk_delete');
+    });
+
+    // Membership Routes
+    $routes->group('membership', function($routes) {
+        $routes->get('/', 'Members\Membership::index');
+        $routes->get('show_membership', 'Members\Membership::show_membership');
+        $routes->get('tambah', 'Members\Membership::membership_tambah');
+        $routes->get('update/(:num)', 'Members\Membership::membership_update/$1');
+        $routes->post('save_tambah', 'Members\Membership::membership_save_tambah');
+        $routes->post('save_update', 'Members\Membership::membership_save_update');
+        $routes->get('delete', 'Members\Membership::membership_delete');
+    });
+
+    // Partner Konsinyasi Routes
+    $routes->group('partnerkonsi', function($routes) {
+        $routes->get('/', 'Members\Partnerkonsi::index');
+        $routes->get('show_partnerkonsi', 'Members\Partnerkonsi::show_partnerkonsi');
+        $routes->get('tambah', 'Members\Partnerkonsi::partnerkonsi_tambah');
+        $routes->get('update/(:num)', 'Members\Partnerkonsi::partnerkonsi_update/$1');
+        $routes->post('save_tambah', 'Members\Partnerkonsi::partnerkonsi_save_tambah');
+        $routes->post('save_update', 'Members\Partnerkonsi::partnerkonsi_save_update');
+        $routes->get('delete', 'Members\Partnerkonsi::partnerkonsi_delete');
     });
     
-    // Currency Routes
-    $routes->group('currency', function($routes) {
-        $routes->get('/', 'Members\Currency::index');
-        $routes->get('show_currency', 'Members\Currency::show_currency');
-        $routes->get('tambah', 'Members\Currency::currency_tambah');
-        $routes->get('update/(:num)', 'Members\Currency::currency_update/$1');
-        $routes->post('save_tambah', 'Members\Currency::currency_save_tambah');
-        $routes->post('save_update', 'Members\Currency::currency_save_update');
-        $routes->get('delete', 'Members\Currency::currency_delete');
-        
-        // AJAX Routes
-        $routes->get('currencies', 'Members\Currency::getCurrencies');
-        $routes->get('default-currencies', 'Members\Currency::getDefaultCurrencies');
+    // Produk Routes
+    $routes->group('produk', function($routes) {
+        $routes->get('/', 'Members\Produk::index');
+        $routes->get('show_produk', 'Members\Produk::show_produk');
+        $routes->get('tambah', 'Members\Produk::produk_tambah');
+        $routes->get('update/(:num)', 'Members\Produk::produk_update/$1');
+        $routes->post('save_tambah', 'Members\Produk::produk_save_tambah');
+        $routes->post('save_update', 'Members\Produk::produk_save_update');
+        $routes->get('delete', 'Members\Produk::produk_delete');
     });
-    
-    // Rate Routes
-    $routes->group('rate', function($routes) {
-        $routes->get('/', 'Members\Currency::rate');
-        $routes->get('show_rate', 'Members\Currency::show_rate');
-        $routes->get('tambah', 'Members\Currency::rate_tambah');
-        $routes->get('update/(:num)', 'Members\Currency::rate_update/$1');
-        $routes->post('save_tambah', 'Members\Currency::rate_save_tambah');
-        $routes->post('save_update', 'Members\Currency::rate_save_update');
-        $routes->get('delete', 'Members\Currency::rate_delete');
-    });
-    
+
     // Kas Routes
     $routes->group('kas', function($routes) {
         $routes->get('/', 'Members\Kas::index');
@@ -169,53 +213,4 @@ $routes->group('members', ['filter' => 'restoreSession'], function($routes) {
         $routes->post('delete', 'Members\Kas::kas_delete');
     });
     
-    // Transaction Routes
-    $routes->group('transaction', function($routes) {
-        $routes->get('/', 'Members\Transaction::index');
-        $routes->get('buy', 'Members\Transaction::form/BUY');
-        $routes->get('sell', 'Members\Transaction::form/SELL');
-        $routes->post('save', 'Members\Transaction::save');
-        
-        // AJAX Routes
-        $routes->get('branches', 'Members\Transaction::getBranches');
-        $routes->get('clients', 'Members\Transaction::getClients');
-        $routes->get('currencies', 'Members\Transaction::getCurrencies');
-        $routes->get('exchange-rates', 'Members\Transaction::getExchangeRates');
-        $routes->get('exchange-rate/(:num)', 'Members\Transaction::getExchangeRate/$1');
-    });
-    
-    // Daily Transaction Routes
-
-    //laporan
-    $routes->group('laporan', function($routes) {
-        // $routes->get('rekap-harian', 'Members\Laporan::rekapharian');
-        $routes->group('rekap-harian', function($routes) {
-            $routes->get('/', 'Members\Laporan::rekapharian');
-            $routes->get('show_rekapharian', 'Members\Laporan::show_rekapharian');
-        });
-        $routes->group('daily-transaction', function($routes) {
-            $routes->get('/', 'Members\Laporan::dailytransaction');
-            $routes->get('show_daily', 'Members\Laporan::show_daily');
-        });
-        $routes->group('rekap-pelanggan', function($routes) {
-            $routes->get('/', 'Members\Laporan::recappelanggan');
-            $routes->get('show_client_recap', 'Members\Laporan::show_client_recap');
-        });
-        $routes->group('currency-rekap', function($routes) {
-            $routes->get('/', 'Members\Laporan::currencyrekap');
-            $routes->get('show_currency_recap', 'Members\Laporan::show_currency_recap');
-        });
-        $routes->group('kas-rekap', function($routes) {
-            $routes->get('/', 'Members\Laporan::kasrekap');
-            $routes->get('show_kas_recap', 'Members\Laporan::show_kas_recap');
-        });
-        $routes->group('settlement-rekap', function($routes) {
-            $routes->get('/', 'Members\Laporan::banksettlement');
-            $routes->get('show_settlement', 'Members\Laporan::show_settlement');
-        });
-        $routes->group('profit-bulanan', function($routes) {
-            $routes->get('/', 'Members\Laporan::profitbulanan');
-            $routes->get('show_profit', 'Members\Laporan::show_profit');
-        }); 
-    });
 });

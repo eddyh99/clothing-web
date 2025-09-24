@@ -6,7 +6,7 @@
                     <div class="col-xl-4">
                         <form method="POST" action="<?= base_url('members/cabang/save_update') ?>">
                         <?= csrf_field() ?>
-                            <input type="hidden" name="id" value="<?= esc($branch['id']) ?>">
+                            <input type="hidden" name="id" value="<?= esc($branch['branch_id']) ?>">
                             <div class="mb-3">
                                 <label for="namaCabang" class="form-label">Nama Cabang</label>
                                 <input type="text" class="form-control" id="namaCabang" name="name" value="<?= esc($branch['name']) ?>" required>

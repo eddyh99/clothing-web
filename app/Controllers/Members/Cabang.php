@@ -21,19 +21,37 @@ class Cabang extends BaseController
         return view('layout/wrapper', $mdata);
     }
 
+    // Clothing
+
     public function show_cabang()
     {
         $response = call_api('GET', URLAPI . '/v1/branch');
         $branches = [];
 
-        if ($response->code === 200) {
-            $branches = $response->message ?? [];
+        if ((int)$response->code === 200 && isset($response->data['data'])) {
+            $branches = $response->data['data'];
         }
 
         return $this->response->setJSON([
             'data' => $branches,
         ]);
     }
+
+    // Valura
+
+    // public function show_cabang()
+    // {
+    //     $response = call_api('GET', URLAPI . '/v1/branch');
+    //     $branches = [];
+
+    //     if ($response->code === 200) {
+    //         $branches = $response->message ?? [];
+    //     }
+
+    //     return $this->response->setJSON([
+    //         'data' => $branches,
+    //     ]);
+    // }
 
     public function cabang_tambah()
     {
@@ -66,8 +84,14 @@ class Cabang extends BaseController
             return redirect()->to('members/cabang')->with('failed', 'Anda tidak memiliki akses untuk mengubah data cabang.');
         }
 
+        // Ambil data cabang dari API
         $response = call_api('GET', URLAPI . "/v1/branch/$id");
-        $branch   = $response->code === 200 ? $response->message : null;
+        $branch   = null;
+
+        if ((int)$response->code === 200 && isset($response->data['data'])) {
+            $branch = $response->data['data']; // ← ini ambil array cabang, bukan message
+        }
+
         if (!$branch) {
             return redirect()->to(base_url('members/cabang'))
                 ->with('failed', 'Cabang tidak ditemukan.');
@@ -85,6 +109,37 @@ class Cabang extends BaseController
 
         return view('layout/wrapper', $mdata);
     }
+    // public function cabang_update($id)
+    // {
+    //     if (!ctype_digit((string) $id)) {
+    //         return redirect()->to(base_url('members/cabang'))
+    //             ->with('failed', 'ID Cabang tidak valid.');
+    //     }
+
+    //     // Cek permission canUpdate
+    //     if (!can('Master Data', 'canUpdate')) {
+    //         return redirect()->to('members/cabang')->with('failed', 'Anda tidak memiliki akses untuk mengubah data cabang.');
+    //     }
+
+    //     $response = call_api('GET', URLAPI . "/v1/branch/$id");
+    //     $branch   = $response->code === 200 ? $response->message : null;
+    //     if (!$branch) {
+    //         return redirect()->to(base_url('members/cabang'))
+    //             ->with('failed', 'Cabang tidak ditemukan.');
+    //     }
+
+    //     $mdata = [
+    //         'title'      => 'Ubah Cabang',
+    //         'content'    => 'cabang/ubah',
+    //         'breadcrumb' => 'Master Data',
+    //         'submenu'    => 'Ubah Cabang',
+    //         'mnmaster'   => 'show',
+    //         'subcabang'  => 'active',
+    //         'branch'     => $branch
+    //     ];
+
+    //     return view('layout/wrapper', $mdata);
+    // }
 
     public function cabang_save_tambah()
     {

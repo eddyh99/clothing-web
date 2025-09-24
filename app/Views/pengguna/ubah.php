@@ -7,7 +7,7 @@
                     <div class="col-6">
                         <form method="POST" action="<?= base_url('members/pengguna/save_update') ?>">
                             <?= csrf_field() ?>
-                            <input type="hidden" name="id" value="<?= esc($user['id']) ?>">
+                            <input type="hidden" name="id" value="<?= esc($user['user_id']) ?>">
 
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
@@ -40,22 +40,6 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="mb-3">
-                                <label for="role" class="form-label">Role</label>
-                                <select class="form-select rounded-2" id="role" name="role_id" required
-                                    data-selected-id="">
-                                    <option value="">Memuat daftar role...</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="branch" class="form-label">Branch</label>
-                                <select class="form-select rounded-2" id="branch" name="branch_id" required
-                                    data-selected-id="">
-                                    <option value="">Memuat daftar cabang...</option>
-                                </select>
-                            </div> -->
-
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
                                 <select class="form-select rounded-2" id="role" name="role_id" required>
@@ -73,7 +57,7 @@
                                 <label for="branch" class="form-label">Branch</label>
                                 <select class="form-select rounded-2" id="branch" name="branch_id" required>
                                     <?php foreach ($branch as $b): ?>
-                                        <option value="<?= $b['id'] ?>" <?= $b['id'] == $user['branch_id'] ? 'selected' : '' ?>>
+                                        <option value="<?= $b['branch_id'] ?>" <?= $b['branch_id'] == $user['branch_id'] ? 'selected' : '' ?>>
                                             <?= esc($b['name']) ?>
                                         </option>
                                     <?php endforeach ?>

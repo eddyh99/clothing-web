@@ -24,12 +24,25 @@ class Pengguna extends BaseController
     public function show_pengguna()
     {
         $response = call_api('GET', URLAPI . '/v1/user');
-        $users    = $response->code === 200 ? ($response->message ?? []) : [];
+        $users = [];
+
+        if ((int)$response->code === 200 && isset($response->data['data'])) {
+            $users = $response->data['data'];
+        }
 
         return $this->response->setJSON([
             'data' => $users
         ]);
     }
+    // public function show_pengguna()
+    // {
+    //     $response = call_api('GET', URLAPI . '/v1/user');
+    //     $users    = $response->code === 200 ? ($response->message ?? []) : [];
+
+    //     return $this->response->setJSON([
+    //         'data' => $users
+    //     ]);
+    // }
 
     public function pengguna_tambah()
     {
@@ -68,11 +81,24 @@ class Pengguna extends BaseController
             return redirect()->to('members/pengguna')->with('failed', 'Anda tidak memiliki akses untuk mengubah data pengguna.');
         }
 
-        $branch   = call_api('GET', URLAPI . '/v1/branch');
-        $role     = call_api('GET', URLAPI . '/v1/role');
-        $response = call_api('GET', URLAPI . "/v1/user/$id");
+        // Ambil data branch
+        $branchRes = call_api('GET', URLAPI . '/v1/branch');
+        $branch = ((int) $branchRes->code === 200 && isset($branchRes->data['data']))
+            ? $branchRes->data['data']
+            : [];
 
-        $user = $response->code === 200 ? $response->message : null;
+        // Ambil data role
+        $roleRes = call_api('GET', URLAPI . '/v1/role');
+        $role = ((int) $roleRes->code === 200 && isset($roleRes->data['data']))
+            ? $roleRes->data['data']
+            : [];
+
+        // Ambil data user by ID
+        $userRes = call_api('GET', URLAPI . "/v1/user/$id");
+        $user = ((int) $userRes->code === 200 && isset($userRes->data['data']))
+            ? $userRes->data['data']
+            : null;
+
         if (!$user) {
             return redirect()->to(base_url('members/pengguna'))
                 ->with('failed', 'Pengguna tidak ditemukan.');
@@ -85,14 +111,51 @@ class Pengguna extends BaseController
             'submenu'     => 'Ubah Pengguna',
             'extra'       => 'pengguna/js/_js_tambah',
             'mnmaster'    => 'show',
-            'branch'      => $branch->message ?? [],
-            'role'        => $role->message ?? [],
+            'branch'      => $branch,
+            'role'        => $role,
             'subpengguna' => 'active',
             'user'        => $user
         ];
 
         return view('layout/wrapper', $mdata);
     }
+    // public function pengguna_update($id)
+    // {
+    //     if (!ctype_digit((string) $id)) {
+    //         return redirect()->to(base_url('members/pengguna'))
+    //             ->with('failed', 'ID pengguna tidak valid.');
+    //     }
+
+    //     // Cek permission canUpdate
+    //     if (!can('Master Data', 'canUpdate')) {
+    //         return redirect()->to('members/pengguna')->with('failed', 'Anda tidak memiliki akses untuk mengubah data pengguna.');
+    //     }
+
+    //     $branch   = call_api('GET', URLAPI . '/v1/branch');
+    //     $role     = call_api('GET', URLAPI . '/v1/role');
+    //     $response = call_api('GET', URLAPI . "/v1/user/$id");
+
+    //     $user = $response->code === 200 ? $response->message : null;
+    //     if (!$user) {
+    //         return redirect()->to(base_url('members/pengguna'))
+    //             ->with('failed', 'Pengguna tidak ditemukan.');
+    //     }
+
+    //     $mdata = [
+    //         'title'       => 'Ubah Pengguna',
+    //         'content'     => 'pengguna/ubah',
+    //         'breadcrumb'  => 'Master Data',
+    //         'submenu'     => 'Ubah Pengguna',
+    //         'extra'       => 'pengguna/js/_js_tambah',
+    //         'mnmaster'    => 'show',
+    //         'branch'      => $branch->message ?? [],
+    //         'role'        => $role->message ?? [],
+    //         'subpengguna' => 'active',
+    //         'user'        => $user
+    //     ];
+
+    //     return view('layout/wrapper', $mdata);
+    // }
 
     public function pengguna_save_tambah()
     {
