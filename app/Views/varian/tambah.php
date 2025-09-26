@@ -5,22 +5,33 @@
                 <div class="row">
 
                     <div class="col-6">
+
                         <form method="POST" action="<?= base_url('members/varian/save_tambah') ?>">
                             <?= csrf_field() ?>
 
-                            <div class="mb-3">
-                                <label for="product_id" class="form-label">Product ID</label>
-                                <input type="number" class="form-control" id="product_id" name="product_id" required>
+                            <div class="mb-3 col-6">
+                                <label for="product" class="form-label">Produk</label>
+                                <select class="form-select rounded-2" id="product" name="product_id" required>
+                                    <option value="">Pilih Produk...</option>
+                                    <?php foreach ($products as $dt): ?>
+                                        <option value="<?= $dt["product_id"] ?>"><?= $dt["name"] ?></option>
+                                    <?php endforeach ?>
+                                </select>
                             </div>
 
                             <div class="mb-3">
                                 <label for="sku" class="form-label">SKU</label>
-                                <input type="text" class="form-control" id="sku" name="sku" placeholder="Kosongkan jika ingin auto-generate">
+                                <input type="text" class="form-control" id="sku" name="sku" placeholder="Kosongkan jika ingin isi otomatis">
                             </div>
 
-                            <div class="mb-3">
-                                <label for="size_id" class="form-label">Size ID</label>
-                                <input type="number" class="form-control" id="size_id" name="size_id">
+                            <div class="mb-3 col-6">
+                                <label for="size" class="form-label">Size</label>
+                                <select class="form-select rounded-2" id="size" name="size_id" required>
+                                    <option value="">Pilih Size...</option>
+                                    <?php foreach ($sizes as $dt): ?>
+                                        <option value="<?= $dt["size_id"] ?>"><?= $dt["size"] ?></option>
+                                    <?php endforeach ?>
+                                </select>
                             </div>
 
                             <div class="mb-3">
@@ -53,10 +64,9 @@
                                 <input type="number" class="form-control" id="min_levels" name="min_levels" value="0">
                             </div>
 
-                            <button type="submit" class="btn btn-primary">
-                                <i class="mdi mdi-content-save"></i> Simpan Varian
-                            </button>
+                            <button type="submit" class="btn btn-primary"><i class="mdi mdi-content-save"></i> Simpan Varian</button>
                         </form>
+
                     </div>
                 </div>
             </div>

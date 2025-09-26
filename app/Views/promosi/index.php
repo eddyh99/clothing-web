@@ -3,20 +3,21 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0"><?=$submenu?></h5>
-                <a href="<?=base_url()?>members/bahanbakuproduk/tambah" class="btn btn-primary">
+                <a href="<?=base_url()?>members/promosi/tambah" class="btn btn-primary">
                     <i class="mdi mdi-plus"></i>
-                    <span>Tambah Bahan Baku Produk</span>
+                    <span>Tambah Promosi</span>
                 </a>
             </div>
             <div class="card-body">
-                <table id="tabel_bahanbakuproduk" class="table table-bordered dt-responsive nowrap align-middle mdl-data-table w-100">
+                <table id="tabel_promosi" class="table table-bordered dt-responsive nowrap align-middle mdl-data-table w-100">
                     <thead>
                         <tr>
                             <th>No.</th>
                             <th>Nama</th>
-                            <th>Barcode</th>
-                            <th>Bahan</th>
-                            <th>Jumlah</th>
+                            <th>Tipe</th>
+                            <th>Mulai</th>
+                            <th>Selesai</th>
+                            <th>Min. Jumlah Member</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -29,7 +30,7 @@
 </div>
 
 <!-- Modal Delete Agen -->
-<div class="modal fade" id="modal_deletebahanbakuproduk" tabindex="-1" aria-labelledby="deleteAgentLabel" aria-hidden="true">
+<div class="modal fade" id="modal_deletepromosi" tabindex="-1" aria-labelledby="deleteAgentLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -37,8 +38,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <p>Apakah Anda yakin ingin menghapus bahan baku produk <strong id="bahanbakuprodukNameToDelete"></strong>?</p>
-        <input type="hidden" id="bahanbakuprodukIdToDelete" value="">
+        <p>Apakah Anda yakin ingin menghapus promosi <strong id="promosiNameToDelete"></strong>?</p>
+        <input type="hidden" id="promosiIdToDelete" value="">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>

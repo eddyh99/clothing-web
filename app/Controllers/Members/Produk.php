@@ -11,7 +11,7 @@ class Produk extends BaseController
         $mdata = [
             'title'      => 'Daftar Produk',
             'content'    => 'produk/index',
-            'breadcrumb' => 'Set Up',
+            'breadcrumb' => 'Master Data',
             'submenu'    => 'Daftar Produk',
             'extra'      => 'produk/js/_js_index',
             'mnmaster'   => 'show',

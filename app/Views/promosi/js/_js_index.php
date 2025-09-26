@@ -1,12 +1,12 @@
 <script nonce="<?= esc($nonce) ?>">
-    $('#tabel_bahanbakuproduk').DataTable({
+    $('#tabel_promosi').DataTable({
         "responsive": true,
         "order": [],
         "ajax": {
-            "url": "<?= base_url() ?>members/bahanbakuproduk/show_bahanbakuproduk",
+            "url": "<?= base_url() ?>members/promosi/show_promosi",
             "type": "GET",
             "dataSrc": function(response) {
-                console.log("=== RAW response dari show_bahanbakuproduk() ===", response);
+                console.log("=== RAW response dari show_promosi() ===", response);
 
                 // Pastikan response.data adalah array
                 if (Array.isArray(response.data)) {
@@ -36,22 +36,25 @@
                 width: "30px"
             },
             {
-                data: 'product_name'
+                data: 'name'
             },
             {
-                data: 'barcode'
+                data: 'promo_type'
             },
             {
-                data: 'material_name'
+                data: 'start_date'
             },
             {
-                data: 'quantity'
+                data: 'end_date'
+            },
+            {
+                data: 'requires_member'
             },
             {
                 data: null,
                 render: function(data, type, full, meta) {
-                    const btnedit = `<a href="<?= base_url() ?>members/bahanbakuproduk/update/${full.product_raw_id}" class="btn btn-sm btn-primary rounded-2"><i class="mdi mdi-square-edit-outline"></i></a>`;
-                    const btndel = `<a href="#" class="btn btn-sm btn-danger btn-delete-bahanbakuproduk" data-id="${full.product_raw_id}" data-name="${full.product_name}" data-bs-toggle="modal" data-bs-target="#modal_deletebahanbakuproduk"><i class="mdi mdi-close-thick"></i></a>`;
+                    const btnedit = `<a href="<?= base_url() ?>members/promosi/update/${full.promo_id}" class="btn btn-sm btn-primary rounded-2"><i class="mdi mdi-square-edit-outline"></i></a>`;
+                    const btndel = `<a href="#" class="btn btn-sm btn-danger btn-delete-promosi" data-id="${full.promo_id}" data-name="${full.name}" data-bs-toggle="modal" data-bs-target="#modal_deletepromosi"><i class="mdi mdi-close-thick"></i></a>`;
                     return btnedit + ' ' + btndel;
                 },
                 orderable: false,
@@ -60,29 +63,29 @@
             }
         ],
         "language": {
-            "emptyTable": "Tidak ada data bahanbakuproduk tersedia."
+            "emptyTable": "Tidak ada data promosi tersedia."
         }
     });
 
     $(function() {
-        // Klik tombol delete bahanbakuproduk
-        $(document).on('click', '.btn-delete-bahanbakuproduk', function () {
-            $('#bahanbakuprodukIdToDelete').val($(this).data('id'));
-            $('#bahanbakuprodukNameToDelete').text($(this).data('name'));
+        // Klik tombol delete promosi
+        $(document).on('click', '.btn-delete-promosi', function () {
+            $('#promosiIdToDelete').val($(this).data('id'));
+            $('#promosiNameToDelete').text($(this).data('name'));
         });
 
         // Konfirmasi delete
         $('#confirmDeleteBtn').on('click', function () {
-            const id = $('#bahanbakuprodukIdToDelete').val();
+            const id = $('#promosiIdToDelete').val();
 
-            $.getJSON(`<?= base_url('members/bahanbakuproduk/delete') ?>`, { id: id })
+            $.getJSON(`<?= base_url('members/promosi/delete') ?>`, { id: id })
                 .done(function (data) {
                     if (data.success) {
-                        $('#modal_deletebahanbakuproduk').modal('hide');
+                        $('#modal_deletepromosi').modal('hide');
                         success_alert(data.message, 'Brand');
-                        $('#tabel_bahanbakuproduk').DataTable().ajax.reload(null, false);
+                        $('#tabel_promosi').DataTable().ajax.reload(null, false);
                     } else {
-                        failed_alert(data.message, "Gagal menghapus bahanbakuproduk");
+                        failed_alert(data.message, "Gagal menghapus promosi");
                     }
                 })
                 .fail(function (xhr) {
@@ -91,10 +94,10 @@
                         if (response.redirect) {
                             window.location.href = response.redirect;
                         } else {
-                            failed_alert(null, "Terjadi kesalahan saat menghapus bahanbakuproduk");
+                            failed_alert(null, "Terjadi kesalahan saat menghapus promosi");
                         }
                     } catch (e) {
-                        failed_alert(null, "Terjadi kesalahan saat menghapus bahanbakuproduk");
+                        failed_alert(null, "Terjadi kesalahan saat menghapus promosi");
                     }
                 });
         });

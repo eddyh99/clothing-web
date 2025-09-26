@@ -38,16 +38,32 @@ class Bahanbakuproduk extends BaseController
     public function bahanbakuproduk_tambah()
     {
         // Cek permission canInsert
-        if (!can('Master Data', 'canInsert')) {
+        if (!can('Set Up', 'canInsert')) {
             return redirect()->to('members/bahanbakuproduk')->with('failed', 'Anda tidak memiliki akses untuk menambah data bahanbakuproduk.');
+        }
+
+        $variantResponse = call_api('GET', URLAPI . '/v1/product-variant');
+        $materialResponse = call_api('GET', URLAPI . '/v1/raw-material');
+
+        $variants  = [];
+        $materials = [];
+
+        if ((int)$variantResponse->code === 200 && isset($variantResponse->data['data'])) {
+            $variants = $variantResponse->data['data']; // array produk
+        }
+
+        if ((int)$materialResponse->code === 200 && isset($materialResponse->data['data'])) {
+            $materials = $materialResponse->data['data']; // array produk
         }
 
         $mdata = [
             'title'      => 'Tambah Bahan Baku Produk',
             'content'    => 'bahanbakuproduk/tambah',
-            'breadcrumb' => 'Master Data',
+            'breadcrumb' => 'Set Up',
             'submenu'    => 'Tambah Bahan Baku Produk',
             'mnmaster'   => 'show',
+            'variants'   => $variants,  // ✅ kirim array produk
+            'materials'  => $materials,  // ✅ kirim array material
             'subbahanbakuproduk'  => 'active'
         ];
 
@@ -57,7 +73,7 @@ class Bahanbakuproduk extends BaseController
     public function bahanbakuproduk_save_tambah()
     {
         // Cek permission canInsert
-        if (!can('Master Data', 'canInsert')) {
+        if (!can('Set Up', 'canInsert')) {
             return redirect()->to('members/bahanbakuproduk')->with('failed', 'Anda tidak memiliki akses untuk menambah data bahanbakuproduk.');
         }
 
@@ -86,7 +102,7 @@ class Bahanbakuproduk extends BaseController
         }
 
         // Cek permission canUpdate
-        if (!can('Master Data', 'canUpdate')) {
+        if (!can('Set Up', 'canUpdate')) {
             return redirect()->to('members/bahanbakuproduk')->with('failed', 'Anda tidak memiliki akses untuk mengubah data bahanbakuproduk.');
         }
 
@@ -103,14 +119,30 @@ class Bahanbakuproduk extends BaseController
                 ->with('failed', 'Bahan Baku Produk tidak ditemukan.');
         }
 
+        $variantResponse = call_api('GET', URLAPI . '/v1/product-variant');
+        $materialResponse = call_api('GET', URLAPI . '/v1/raw-material');
+
+        $variants  = [];
+        $materials = [];
+
+        if ((int)$variantResponse->code === 200 && isset($variantResponse->data['data'])) {
+            $variants = $variantResponse->data['data']; // array produk
+        }
+
+        if ((int)$materialResponse->code === 200 && isset($materialResponse->data['data'])) {
+            $materials = $materialResponse->data['data']; // array produk
+        }
+
         $mdata = [
             'title'      => 'Ubah Bahan Baku Produk',
             'content'    => 'bahanbakuproduk/ubah',
-            'breadcrumb' => 'Master Data',
+            'breadcrumb' => 'Set Up',
             'submenu'    => 'Ubah Bahan Baku Produk',
             'mnmaster'   => 'show',
-            'subbahanbakuproduk'  => 'active',
-            'bahanbakuproduk'     => $rawmaterials
+            'bahanbakuproduk'     => $rawmaterials,
+            'variants'   => $variants,  // ✅ kirim array produk
+            'materials'  => $materials,  // ✅ kirim array material
+            'subbahanbakuproduk'  => 'active'
         ];
 
         return view('layout/wrapper', $mdata);
@@ -119,7 +151,7 @@ class Bahanbakuproduk extends BaseController
     public function bahanbakuproduk_save_update()
     {
         // Cek permission canUpdate
-        if (!can('Master Data', 'canUpdate')) {
+        if (!can('Set Up', 'canUpdate')) {
             return redirect()->to('members/bahanbakuproduk')->with('failed', 'Anda tidak memiliki akses untuk mengubah data bahanbakuproduk.');
         }
 
@@ -159,7 +191,7 @@ class Bahanbakuproduk extends BaseController
         }
 
         // Cek permission canDelete
-        if (!can('Master Data', 'canDelete')) {
+        if (!can('Set Up', 'canDelete')) {
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Anda tidak memiliki akses untuk menghapus data bahanbakuproduk.'

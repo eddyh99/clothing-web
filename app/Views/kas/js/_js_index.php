@@ -1,26 +1,18 @@
 <script nonce="<?= esc($nonce) ?>">
-    let kasTable;
-
-    $("#btnLihat").on("click",function(){
-        console.log('Filter cabang:', $('#filter_cabang').val());
-        kasTable.ajax.reload();
-    })
-
-    kasTable = $('#tabel_kas').DataTable({
-        "dom": '<"d-flex justify-content-between align-items-center flex-wrap"lf>t<"d-flex justify-content-between align-items-center"ip>',
+    $('#tabel_kas').DataTable({
         "responsive": true,
+        "order": [],
         "ajax": {
             "url": "<?= base_url() ?>members/kas/show_kas",
             "type": "GET",
-            "data": function(d) {
-                // Kirim parameter filter cabang ke server
-                const branchValue = $('#filter_cabang').val();
-                console.log('Sending branch filter:', branchValue);
-                d.branch = branchValue;
-            },
-            "dataSrc": function(data) {
-                console.log('Raw data received:', data);
-                return data;
+            "dataSrc": function(response) {
+                console.log("=== RAW response dari show_kas() ===", response);
+
+                // Pastikan response.data adalah array
+                if (Array.isArray(response.data)) {
+                    return response.data;
+                }
+                return [];
             },
             "error": function(xhr, error, thrown) {
                 try {
@@ -43,148 +35,66 @@
                 searchable: false,
                 width: "30px"
             },
-            { 
-                "data": "occurred_at",
-                "render": function(data) {
-                    return formatDate(data);
-                }
-            },
-            { 
-                "data": "movement_type",
-                "render": function(data) {
-                    switch(data) {
-                        case 'IN': return 'Kas Masuk';
-                        case 'OUT': return 'Kas Keluar';
-                        case 'AWAL': return 'Kas Awal';
-                        default: return data;
-                    }
-                }
-            },
-            { 
-                "data": "reason"                
-            },
-            { 
-                "data": "amount",
-                "render": function(data, type, row) {
-                    return formatCurrency(data, row.currency_code);
-                },
-                "className": "text-end"
+            {
+                data: 'entry_type'
             },
             {
-                "data": "id",
-                "render": function(data, type, row) {
-                    const canEdit   = <?= can('exchangerate', 'canUpdate') ? 'true' : 'false' ?>;
-                    const canDelete = <?= can('exchangerate', 'canDelete') ? 'true' : 'false' ?>;
-
-                    // if no permission at all → return empty
-                    if (!canEdit && !canDelete) return '';
-
-                    let btn = '';
-
-                    if (canEdit) {
-                        btn += `<a href="<?= base_url() ?>members/kas/update/${data}" 
-                                    class="btn btn-sm btn-primary rounded-2 btn-action">
-                                    <i class="mdi mdi-square-edit-outline"></i>
-                                </a> `;
-                    }
-
-                    if (canDelete) {
-                        btn += `<a href="#" 
-                                    class="btn btn-sm btn-danger btn-delete-kas btn-action" 
-                                    data-id="${data}" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#modal_deletekas">
-                                    <i class="mdi mdi-close-thick"></i>
-                                </a>`;
-                    }
-
-                    return btn;
+                data: 'description'
+            },
+            {
+                data: 'amount'
+            },
+            {
+                data: null,
+                render: function(data, type, full, meta) {
+                    const btnedit = `<a href="<?= base_url() ?>members/kas/update/${full.cash_id}" class="btn btn-sm btn-primary rounded-2"><i class="mdi mdi-square-edit-outline"></i></a>`;
+                    const btndel = `<a href="#" class="btn btn-sm btn-danger btn-delete-kas" data-id="${full.cash_id}" data-name="${full.cash_id}" data-bs-toggle="modal" data-bs-target="#modal_deletekas"><i class="mdi mdi-close-thick"></i></a>`;
+                    return btnedit + ' ' + btndel;
                 },
                 orderable: false,
                 searchable: false,
                 width: "100px"
             }
         ],
-        "order": [[1, "desc"]],
-        "initComplete": function() {
-            console.log('Tabel berhasil diinisialisasi');
+        "language": {
+            "emptyTable": "Tidak ada data kas tersedia."
         }
     });
 
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const options = {
-            day: '2-digit',
-            month: '2-digit', 
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        };
-        return date.toLocaleDateString('id-ID', options);
-    }
+    $(function() {
+        // Klik tombol delete kas
+        $(document).on('click', '.btn-delete-kas', function () {
+            $('#kasIdToDelete').val($(this).data('id'));
+            $('#kasNameToDelete').text($(this).data('name'));
+        });
 
-    function formatCurrency(amount, currencyId) {
-        const num = parseFloat(amount) || 0;
-        let formatted = new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: currencyId,
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(num);
+        // Konfirmasi delete
+        $('#confirmDeleteBtn').on('click', function () {
+            const id = $('#kasIdToDelete').val();
 
-        return formatted;
-    }
-
-    $(document).on('click', '.btn-delete-kas', function(e) {
-        e.preventDefault();
-        const kasId = $(this).data('id');
-        $('#kasIdToDelete').val(kasId);
-    });
-
-    // Reset tombol ketika modal ditutup
-    $('#modal_deletekas').on('hidden.bs.modal', function() {
-        $('#confirmDeleteBtn').prop('disabled', false).html('Ya');
-    });
-
-    // Submit form delete kas
-    $('#frmdeletedkas').on('submit', function(e) {
-        e.preventDefault();
-
-        const form = $(this);
-        const id = $('#kasIdToDelete').val();
-        const reason = $('#deleted_reason').val();
-
-        $('#confirmDeleteBtn').prop('disabled', true).html('Menghapus...');
-
-        $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: form.serialize(),
-            dataType: 'json',
-            success: function(data) {
-                if (data.success) {
-                    $('#modal_deletekas').modal('hide');
-                    success_alert(data.message, 'Kas');
-                    $('#tabel_kas').DataTable().ajax.reload(null, false);
-                } else {
-                    failed_alert(data.message, "Gagal menghapus kas");
-                }
-            },
-            error: function(xhr, error, thrown) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.redirect) {
-                        window.location.href = response.redirect;
+            $.getJSON(`<?= base_url('members/kas/delete') ?>`, { id: id })
+                .done(function (data) {
+                    if (data.success) {
+                        $('#modal_deletekas').modal('hide');
+                        success_alert(data.message, 'Brand');
+                        $('#tabel_kas').DataTable().ajax.reload(null, false);
                     } else {
+                        failed_alert(data.message, "Gagal menghapus kas");
+                    }
+                })
+                .fail(function (xhr) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        } else {
+                            failed_alert(null, "Terjadi kesalahan saat menghapus kas");
+                        }
+                    } catch (e) {
                         failed_alert(null, "Terjadi kesalahan saat menghapus kas");
                     }
-                } catch (e) {
-                    failed_alert(null, "Terjadi kesalahan saat menghapus kas");
-                }
-            },
-            complete: function() {
-                $('#confirmDeleteBtn').prop('disabled', false).html('Ya');
-            }
+                });
         });
+
     });
 </script>

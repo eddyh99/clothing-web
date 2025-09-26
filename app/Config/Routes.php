@@ -179,6 +179,17 @@ $routes->group('members', ['filter' => 'restoreSession'], function($routes) {
         $routes->get('delete', 'Members\Membership::membership_delete');
     });
 
+    // Promosi Routes
+    $routes->group('promosi', function($routes) {
+        $routes->get('/', 'Members\Promosi::index');
+        $routes->get('show_promosi', 'Members\Promosi::show_promosi');
+        $routes->get('tambah', 'Members\Promosi::promosi_tambah');
+        $routes->get('update/(:num)', 'Members\Promosi::promosi_update/$1');
+        $routes->post('save_tambah', 'Members\Promosi::promosi_save_tambah');
+        $routes->post('save_update', 'Members\Promosi::promosi_save_update');
+        $routes->get('delete', 'Members\Promosi::promosi_delete');
+    });
+
     // Partner Konsinyasi Routes
     $routes->group('partnerkonsi', function($routes) {
         $routes->get('/', 'Members\Partnerkonsi::index');
@@ -213,4 +224,93 @@ $routes->group('members', ['filter' => 'restoreSession'], function($routes) {
         $routes->post('delete', 'Members\Kas::kas_delete');
     });
     
+    // Stok Routes
+    $routes->group('stok', function($routes) {
+        $routes->get('/', 'Members\Stok::index');
+        $routes->get('show_stok', 'Members\Stok::show_stok');
+        $routes->get('tambah', 'Members\Stok::stok_tambah');
+        $routes->get('update/(:num)', 'Members\Stok::stok_update/$1');
+        $routes->post('save_tambah', 'Members\Stok::stok_save_tambah');
+        $routes->post('save_update', 'Members\Stok::stok_save_update');
+        $routes->get('delete', 'Members\Stok::stok_delete');
+    });
+
+    // Stok Penyesuaian Routes
+    $routes->group('stok', function($routes) {
+        $routes->group('penyesuaian', function($routes) {
+            $routes->get('/', 'Members\Stokpenyesuaian::index');
+            $routes->get('show_stok_penyesuaian', 'Members\Stokpenyesuaian::show_stok_penyesuaian');
+            $routes->get('tambah', 'Members\Stokpenyesuaian::stok_penyesuaian_tambah');
+            $routes->get('update/(:num)', 'Members\Stokpenyesuaian::stok_penyesuaian_update/$1');
+            $routes->post('save_tambah', 'Members\Stokpenyesuaian::stok_penyesuaian_save_tambah');
+            $routes->post('save_update', 'Members\Stokpenyesuaian::stok_penyesuaian_save_update');
+            $routes->get('delete', 'Members\Stokpenyesuaian::stok_penyesuaian_delete');
+        });
+        $routes->group('transfer', function($routes) {
+            $routes->get('/', 'Members\Stoktransfer::index');
+            $routes->get('show_stok_transfer', 'Members\Stoktransfer::show_stok_transfer');
+            $routes->get('tambah', 'Members\Stoktransfer::stok_transfer_tambah');
+            $routes->get('update/(:num)', 'Members\Stoktransfer::stok_transfer_update/$1');
+            $routes->post('save_tambah', 'Members\Stoktransfer::stok_transfer_save_tambah');
+            $routes->post('save_update', 'Members\Stoktransfer::stok_transfer_save_update');
+            $routes->get('delete', 'Members\Stoktransfer::stok_transfer_delete');
+        });
+    });
+
+    // Produksi Routes
+    $routes->group('produksi', function($routes) {
+        $routes->get('/', 'Members\Produksi::index');
+        $routes->get('show_produksi', 'Members\Produksi::show_produksi');
+        $routes->get('tambah', 'Members\Produksi::produksi_tambah');
+        $routes->get('update/(:num)', 'Members\Produksi::produksi_update/$1');
+        $routes->post('save_tambah', 'Members\Produksi::produksi_save_tambah');
+        $routes->post('save_update', 'Members\Produksi::produksi_save_update');
+        $routes->get('delete', 'Members\Produksi::produksi_delete');
+    });
+
+    // Kas Routes
+    $routes->group('kas', function($routes) {
+        $routes->get('/', 'Members\Kas::index');
+        $routes->get('show_kas', 'Members\Kas::show_kas');
+        $routes->get('tambah', 'Members\Kas::kas_tambah');
+        $routes->get('update/(:num)', 'Members\Kas::kas_update/$1');
+        $routes->post('save_tambah', 'Members\Kas::kas_save_tambah');
+        $routes->post('save_update', 'Members\Kas::kas_save_update');
+        $routes->get('delete', 'Members\Kas::kas_delete');
+    });
+
+    // Penjualan Routes
+    $routes->group('penjualan', function($routes) {
+        $routes->get('/', 'Members\Penjualan::index');
+        $routes->get('show_penjualan', 'Members\Penjualan::show_penjualan');
+        $routes->get('tambah', 'Members\Penjualan::penjualan_tambah');
+        $routes->get('update/(:num)', 'Members\Penjualan::penjualan_update/$1');
+        $routes->post('save_tambah', 'Members\Penjualan::penjualan_save_tambah');
+        $routes->post('save_update', 'Members\Penjualan::penjualan_save_update');
+        $routes->get('delete', 'Members\Penjualan::penjualan_delete');
+    });
+
+    // Retur Routes
+    $routes->group('retur', function($routes) {
+        $routes->get('/', 'Members\Retur::index');
+        $routes->get('show_retur', 'Members\Retur::show_retur');
+        $routes->get('tambah', 'Members\Retur::retur_tambah');
+        $routes->get('update/(:num)', 'Members\Retur::retur_update/$1');
+        $routes->post('save_tambah', 'Members\Retur::retur_save_tambah');
+        $routes->post('save_update', 'Members\Retur::retur_save_update');
+        $routes->get('delete', 'Members\Retur::retur_delete');
+    });
+
+    //laporan
+    $routes->group('laporan', function($routes) {
+        // $routes->get('rekap-harian', 'Members\Laporan::rekapharian');
+        $routes->group('rekap-harian', function($routes) {
+            $routes->get('/', 'Members\Laporan::rekapharian');
+            $routes->get('show_rekapharian', 'Members\Laporan::show_rekapharian');
+        });
+        $routes->group('daily-transaction', function($routes) {
+            $routes->get('/', 'Members\Laporan::dailytransaction');
+            $routes->get('show_daily', 'Members\Laporan::show_daily');
+        });
+    });
 });

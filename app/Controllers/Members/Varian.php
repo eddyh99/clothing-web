@@ -42,12 +42,28 @@ class Varian extends BaseController
             return redirect()->to('members/varian')->with('failed', 'Anda tidak memiliki akses untuk menambah data varian.');
         }
 
+        $productResponse = call_api('GET', URLAPI . '/v1/product');
+        $sizeResponse = call_api('GET', URLAPI . '/v1/product-size');
+
+        $products     = [];
+        $sizes     = [];
+
+        if ((int)$productResponse->code === 200 && isset($productResponse->data['data'])) {
+            $products = $productResponse->data['data'];   // array product
+        }
+
+        if ((int)$sizeResponse->code === 200 && isset($sizeResponse->data['data'])) {
+            $sizes = $sizeResponse->data['data'];   // array size
+        }
+
         $mdata = [
             'title'      => 'Tambah Varian',
             'content'    => 'varian/tambah',
             'breadcrumb' => 'Master Data',
             'submenu'    => 'Tambah Varian',
             'mnmaster'   => 'show',
+            'products'      => $products,      // ✅ kirim array product
+            'sizes'      => $sizes,      // ✅ kirim array size
             'subvarian'  => 'active'
         ];
 
@@ -103,14 +119,30 @@ class Varian extends BaseController
                 ->with('failed', 'Varian tidak ditemukan.');
         }
 
+        $productResponse = call_api('GET', URLAPI . '/v1/product');
+        $sizeResponse = call_api('GET', URLAPI . '/v1/product-size');
+
+        $products     = [];
+        $sizes     = [];
+
+        if ((int)$productResponse->code === 200 && isset($productResponse->data['data'])) {
+            $products = $productResponse->data['data'];   // array product
+        }
+
+        if ((int)$sizeResponse->code === 200 && isset($sizeResponse->data['data'])) {
+            $sizes = $sizeResponse->data['data'];   // array size
+        }
+
         $mdata = [
             'title'      => 'Ubah Varian',
             'content'    => 'varian/ubah',
             'breadcrumb' => 'Master Data',
             'submenu'    => 'Ubah Varian',
             'mnmaster'   => 'show',
+            'varian'     => $variants,
+            'products'   => $products,      // ✅ kirim array product
+            'sizes'      => $sizes,      // ✅ kirim array size
             'subvarian'  => 'active',
-            'varian'     => $variants
         ];
 
         return view('layout/wrapper', $mdata);
@@ -189,11 +221,10 @@ class Varian extends BaseController
     {
         return [
             'product_id' => [
-                'label'  => 'Produk',
-                'rules'  => 'required|integer',
+                'label' => 'Produk',
+                'rules' => 'required|is_natural_no_zero',
                 'errors' => [
-                    'required' => '{field} wajib diisi.',
-                    'integer'  => '{field} harus berupa angka.'
+                    'required' => '{field} wajib dipilih.',
                 ]
             ],
             'sku' => [
@@ -205,10 +236,10 @@ class Varian extends BaseController
                 ]
             ],
             'size_id' => [
-                'label'  => 'Ukuran',
-                'rules'  => 'permit_empty|integer',
+                'label' => 'Ukuran',
+                'rules' => 'required|alpha_numeric',
                 'errors' => [
-                    'integer' => '{field} harus berupa angka.'
+                    'required' => '{field} wajib dipilih.',
                 ]
             ],
             'color' => [

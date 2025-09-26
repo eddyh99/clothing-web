@@ -43,12 +43,12 @@
                 <!-- Set Up -->
                 <?php if (can('Set Up','canView')): ?>
                 <li class="nav-item">
-                    <a class="nav-link menu-link <?=(!empty($mnmaster)) ? "active" : "collapsed" ?>" 
+                    <a class="nav-link menu-link <?=(!empty($mnsetup)) ? "active" : "collapsed" ?>" 
                        href="#sidebarApps" data-bs-toggle="collapse" role="button" 
                        aria-expanded="false" aria-controls="sidebarApps">
                         <i class="ri-apps-2-line"></i> <span>Set Up</span>
                     </a>
-                    <div class="collapse menu-dropdown <?=$mnmaster ?? null?>" id="sidebarApps">
+                    <div class="collapse menu-dropdown <?=$mnsetup ?? null?>" id="sidebarApps">
                         <ul class="nav nav-sm flex-column">
 
                             <li class="nav-item">
@@ -87,6 +87,10 @@
                                 <a href="<?=base_url()?>members/membership" class="nav-link <?=$submembership ?? null?>"> Membership </a>
                             </li>
 
+                            <li class="nav-item">
+                                <a href="<?=base_url()?>members/promosi" class="nav-link <?=$subpromosi ?? null?>"> Promosi </a>
+                            </li>
+
                         </ul>
                     </div>
                 </li>
@@ -117,6 +121,66 @@
 
                         </ul>
                     </div>
+                </li>
+                <?php endif; ?>
+
+                <!-- Produksi -->
+                <?php if (can('Produksi','canView')): ?>
+                <li class="nav-item">
+                    <a class="nav-link menu-link <?=$mnproduksi ?? null?>" href="<?=base_url()?>members/produksi">
+                        <i class="mdi mdi-factory"></i> <span>Produksi</span>
+                    </a>
+                </li>
+                <?php endif; ?>
+
+                <!-- Penjualan -->
+                <?php if (can('Produksi','canView')): ?>
+                <li class="nav-item">
+                    <a class="nav-link menu-link <?=$mnpenjualan ?? null?>" href="<?=base_url()?>members/penjualan">
+                        <i class="mdi mdi-cart-plus"></i> <span>Penjualan</span>
+                    </a>
+                </li>
+                <?php endif; ?>
+
+                <!-- Retur -->
+                <?php if (can('Produksi','canView')): ?>
+                <li class="nav-item">
+                    <a class="nav-link menu-link <?=$mnretur ?? null?>" href="<?=base_url()?>members/retur">
+                        <i class="mdi mdi-keyboard-return"></i> <span>Retur</span>
+                    </a>
+                </li>
+                <?php endif; ?>
+
+                <!-- Stok -->
+                <?php if (can('Stok','canView')): ?>
+                <li class="nav-item">
+                    <a class="nav-link menu-link <?=(!empty($mnstok)) ? "active" : "collapsed" ?>" 
+                       href="#sidebarApps" data-bs-toggle="collapse" role="button" 
+                       aria-expanded="false" aria-controls="sidebarApps">
+                        <i class="ri-apps-2-line"></i> <span>Stok</span>
+                    </a>
+                    <div class="collapse menu-dropdown <?=$mnstok ?? null?>" id="sidebarApps">
+                        <ul class="nav nav-sm flex-column">
+
+                            <li class="nav-item">
+                                <a href="<?=base_url()?>members/stok/penyesuaian" class="nav-link <?=$subproduk ?? null?>"> Penyesuaian </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="<?=base_url()?>members/stok/transfer" class="nav-link <?=$subpelanggan ?? null?>"> Transfer </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+                <?php endif; ?>
+
+                <!-- Pinjam -->
+                <?php if (can('Kas','canView')): ?>
+                <li class="nav-item">
+                    <a class="nav-link menu-link <?=$mnpinjam ?? null?>" href="<?=base_url()?>members/pinjam">
+                        <i class="mdi mdi-hanger"></i> <span>Pinjam</span>
+                    </a>
                 </li>
                 <?php endif; ?>
 

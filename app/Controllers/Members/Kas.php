@@ -8,29 +8,14 @@ class Kas extends BaseController
 {
     public function index()
     {
-        $currencyResponse = call_api('GET', URLAPI . '/v1/currency');
-        if ($currencyResponse->code === 200) {
-            $currencies = $currencyResponse->message ?? [];
-        }
-
-        // Ambil data cabang jika admin
-        $branches = [];
-        $branchResponse = call_api('GET', URLAPI . '/v1/branch');
-        if ($branchResponse->code === 200) {
-            $branches = $branchResponse->message ?? [];
-        }
-
         $mdata = [
-            'title'           => 'Kas & Saldo',
-            'content'         => 'kas/index',
-            'breadcrumb'      => 'Transaksi',
-            'submenu'         => 'Kas & Saldo',
-            'extra'           => 'kas/js/_js_index',
-            'mnkas'           => 'active',
-            'branches'        => $branches,
-            'currencies'      => $currencies,
-            'permission'      => $_SESSION["permissions"],
-            'userBranchId'    => $user['branch_id'] ?? null,
+            'title'      => 'Daftar Kas',
+            'content'    => 'kas/index',
+            'breadcrumb' => 'Set Up',
+            'submenu'    => 'Daftar Kas',
+            'extra'      => 'kas/js/_js_index',
+            'mnmaster'   => 'show',
+            'subkas'  => 'active'
         ];
 
         return view('layout/wrapper', $mdata);
@@ -38,86 +23,193 @@ class Kas extends BaseController
 
     public function show_kas()
     {
-        $targetBranchId = $this->request->getGET('branch');
+        $response = call_api('GET', URLAPI . '/v1/cash-entry');
+        $categories = [];
 
-        // Siapkan URL API
-        if (!empty($targetBranchId)){
-            // Gunakan endpoint spesifik untuk branch tertentu
-            $kasUrl = URLAPI . '/v1/cash/branch/' . $targetBranchId;
-        } else {
-            // Gunakan endpoint umum untuk semua cabang (hanya admin)
-            $kasUrl = URLAPI . '/v1/cash';
+        if ((int)$response->code === 200 && isset($response->data['data'])) {
+            $categories = $response->data['data'];
         }
 
-
-        // Panggil API
-        $kasResponse = call_api('GET', $kasUrl);
-        $data = [];
-
-        if ($kasResponse->code === 200) {
-            $data = $kasResponse->message ?? [];            
-        } else {
-            // Log error jika perlu
-            log_message('error', 'Gagal mengambil data kas: ' . json_encode($kasResponse));
-        }
-
-        // Format response untuk DataTables
-        return $this->response->setJSON($data);
+        return $this->response->setJSON([
+            'data' => $categories,
+        ]);
     }
 
-    /**
-     * Helper: jika AJAX, kembalikan JSON; jika bukan, redirect dengan flashdata.
-     */
-    private function respondOrRedirect(array $payload)
+    public function kas_tambah()
     {
-        if ($this->request->isAJAX()) {
-            return $this->response->setJSON($payload);
-        } else {
-            // gunakan flashdata untuk notifikasi di halaman index
-            if ($payload['success']) {
-                return redirect()->to(base_url('members/kas'))->with('success', $payload['message']);
-            } else {
-                return redirect()->to(base_url('members/kas'))->with('failed', $payload['message']);
-            }
+        // Cek permission canInsert
+        if (!can('Kas', 'canInsert')) {
+            return redirect()->to('members/kas')->with('failed', 'Anda tidak memiliki akses untuk menambah data kas.');
         }
+
+        $mdata = [
+            'title'      => 'Tambah Kas',
+            'content'    => 'kas/tambah',
+            'breadcrumb' => 'Kas',
+            'submenu'    => 'Tambah Kas',
+            'mnmaster'   => 'show',
+            'subkas'  => 'active'
+        ];
+
+        return view('layout/wrapper', $mdata);
+    }
+
+    public function kas_save_tambah()
+    {
+        // Cek permission canInsert
+        if (!can('Kas', 'canInsert')) {
+            return redirect()->to('members/kas')->with('failed', 'Anda tidak memiliki akses untuk menambah data kas.');
+        }
+
+        $validation = $this->validation;
+        $validation->setRules($this->rules());
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('failed', $validation->getErrors());
+        }
+
+        $postData = $this->getPostData();
+        $response = call_api('POST', URLAPI . '/v1/cash-entry', $postData);
+        if ($response->code === 201) {
+            return redirect()->to(base_url('members/kas'))
+                ->with('success', 'Kas berhasil ditambahkan!');
+        }
+
+        return redirect()->back()->withInput()->with('failed', [$response->message ?? 'Gagal menambahkan kas.']);
+    }
+
+    public function kas_update($id)
+    {
+        if (!ctype_digit((string) $id)) {
+            return redirect()->to(base_url('members/kas'))
+                ->with('failed', 'ID Kas tidak valid.');
+        }
+
+        // Cek permission canUpdate
+        if (!can('Kas', 'canUpdate')) {
+            return redirect()->to('members/kas')->with('failed', 'Anda tidak memiliki akses untuk mengubah data kas.');
+        }
+
+        // Ambil data kas dari API
+        $response = call_api('GET', URLAPI . "/v1/cash-entry/$id");
+        $categories   = null;
+
+        if ((int)$response->code === 200 && isset($response->data['data'])) {
+            $categories = $response->data['data']; // ← ini ambil array kas, bukan message
+        }
+
+        if (!$categories) {
+            return redirect()->to(base_url('members/kas'))
+                ->with('failed', 'Kas tidak ditemukan.');
+        }
+
+        $mdata = [
+            'title'      => 'Ubah Kas',
+            'content'    => 'kas/ubah',
+            'breadcrumb' => 'Kas',
+            'submenu'    => 'Ubah Kas',
+            'mnmaster'   => 'show',
+            'subkas'  => 'active',
+            'kas'     => $categories
+        ];
+
+        return view('layout/wrapper', $mdata);
+    }
+
+    public function kas_save_update()
+    {
+        // Cek permission canUpdate
+        if (!can('Kas', 'canUpdate')) {
+            return redirect()->to('members/kas')->with('failed', 'Anda tidak memiliki akses untuk mengubah data kas.');
+        }
+
+        $validation = $this->validation;
+        $validation->setRules($this->rules());
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('failed', $validation->getErrors());
+        }
+
+        $id = $this->request->getPost('id');
+        if (!ctype_digit((string) $id)) {
+            return redirect()->to(base_url('members/kas'))
+                ->with('failed', 'ID Kas tidak valid.');
+        }
+
+        $postData = $this->getPostData();
+        $response = call_api('PUT', URLAPI . "/v1/cash-entry/$id", $postData);
+
+        if ($response->code === 200) {
+            return redirect()->to(base_url('members/kas'))
+                ->with('success', 'Kas berhasil diupdate!');
+        }
+
+        return redirect()->back()->withInput()->with('failed', [$response->message ?? 'Gagal mengupdate kas.']);
+    }
+
+    public function kas_delete()
+    {
+        $id = $this->request->getGet('id');
+
+        if (!$id || !ctype_digit((string) $id)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'ID kas tidak valid'
+            ]);
+        }
+
+        // Cek permission canDelete
+        if (!can('Kas', 'canDelete')) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses untuk menghapus data kas.'
+            ]);
+        }
+
+        $response = call_api('DELETE', URLAPI . "/v1/cash-entry/$id");
+
+        if (in_array($response->code, [200, 204])) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Kas berhasil dihapus'
+            ]);
+        }
+
+        $message = $response->message ?? ($response->message ?? 'Gagal menghapus kas');
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => $message
+        ]);
     }
 
     /**
      * Validation rules untuk Kas
      */
-    private function kasRules(): array
+    private function rules(): array
     {
         return [
-            'currency' => [
-                'label' => 'Mata Uang',
-                'rules' => 'required',
-                'errors' => [
-                    'required' => '{field} wajib dipilih.'
-                ]
-            ],
-            'jenis' => [
-                'label' => 'Jenis Transaksi',
-                'rules' => 'required|in_list[IN,OUT,AWAL]',
+            'entry_type' => [
+                'label'  => 'Jenis Kas',
+                'rules'  => 'required|in_list[initial,in,out]',
                 'errors' => [
                     'required' => '{field} wajib dipilih.',
-                    'in_list' => '{field} tidak valid.'
+                    'in_list'  => '{field} hanya boleh Awal, Masuk, atau Keluar.'
                 ]
             ],
-            'nominal' => [
-                'label' => 'Nominal',
-                'rules' => 'required|numeric|greater_than[0]',
+            'description' => [
+                'label'  => 'Deskripsi',
+                'rules'  => 'required|trim|max_length[255]|regex_match[/^[A-Za-z0-9\s.,-]+$/]',
                 'errors' => [
-                    'required' => '{field} wajib diisi.',
-                    'numeric' => '{field} harus berupa angka.',
-                    'greater_than' => '{field} harus lebih besar dari 0.'
+                    'required'    => '{field} wajib diisi.',
+                    'regex_match' => '{field} hanya boleh berisi huruf, angka, spasi, titik, koma, dan strip.'
                 ]
             ],
-            'keterangan' => [
-                'label' => 'Keterangan',
-                'rules' => 'required|max_length[255]',
+            'amount' => [
+                'label'  => 'Jumlah',
+                'rules'  => 'required|numeric',
                 'errors' => [
                     'required' => '{field} wajib diisi.',
-                    'max_length' => '{field} maksimal 255 karakter.'
+                    'numeric'  => '{field} harus berupa angka.'
                 ]
             ]
         ];
@@ -129,11 +221,10 @@ class Kas extends BaseController
     private function getPostData(): array
     {
         return [
-            'currency_id'   => (int)$this->request->getPost('currency'),
-            'movement_type' => esc($this->request->getPost('jenis')), // IN, OUT, AWAL
-            'amount'        => (float) $this->request->getPost('nominal'),
-            'reason'        => esc($this->request->getPost('keterangan')),
-            'branch'        => (int)$this->request->getPost('cabang')
+            'entry_type'  => esc($this->request->getPost('entry_type')),
+            'description' => esc($this->request->getPost('description')),
+            'amount'      => esc($this->request->getPost('amount'))
         ];
     }
+
 }
